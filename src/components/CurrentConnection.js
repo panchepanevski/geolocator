@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "@emotion/styled";
-import CurrentConectionIconSvg from "../assets/CurrentConectionIconSvg.svg";
-import GetApiPath from "../api/GetApiPath";
+import currentConectionIconSvg from "../assets/CurrentConectionIconSvg.svg";
+import getGeolocation from "../api/getGeolocation";
+import ApiResults from "./ApiResults";
 
 const CurrentConectionBar = styled.div`
   display: flex;
@@ -42,21 +43,27 @@ const CurrentConectionText = styled.h2`
   padding-top: 10px;
 `;
 
-function HandleClick() {
-  console.log(GetApiPath(""));
-}
-
 export default function CurrentConection() {
-  return (
-    <CurrentConectionBar>
-      <CurrentConectionText>
-        You use an internet connection but don't know from which provider?
-      </CurrentConectionText>
+  const [geolocation, setGeolocation] = React.useState(null);
 
-      <CurrentConectionButton onClick={HandleClick}>
-        <p>FIND OUT</p>
-        <CurrentConectionIcon src={CurrentConectionIconSvg} />
-      </CurrentConectionButton>
-    </CurrentConectionBar>
+  async function handleClick() {
+    const newGeolocation = await getGeolocation("");
+    setGeolocation(newGeolocation);
+  }
+
+  return (
+    <>
+      <CurrentConectionBar>
+        <CurrentConectionText>
+          You use an internet connection but don't know from which provider?
+        </CurrentConectionText>
+
+        <CurrentConectionButton onClick={handleClick}>
+          FIND OUT
+          <CurrentConectionIcon src={currentConectionIconSvg} />
+        </CurrentConectionButton>
+      </CurrentConectionBar>
+      <ApiResults geolocation={geolocation} />
+    </>
   );
 }
